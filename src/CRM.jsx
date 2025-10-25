@@ -2,6 +2,7 @@ import { useState } from "react";
 // import { useEffect } from "react";
 export default function CRM() {
   let [click, setClick] = useState(false);
+  let [edit, setEdit] = useState(false);
   let [emp, setEmp] = useState({
     name: "",
     email: "",
@@ -45,17 +46,7 @@ export default function CRM() {
                 X
               </button>
             </div>
-            <form
-              className="form"
-              onSubmit={(e) => {
-                e.preventDefault();
-                if (!emp.name || !emp.email) return;
-                else {
-                  setArrEmp([...arrEmp, emp]);
-                  setEmp({ name: "", email: "", number: "", company: "" });
-                }
-              }}
-            >
+            <form className="form">
               <label>
                 <span
                   className="require"
@@ -159,7 +150,25 @@ export default function CRM() {
                     <td>{item.email}</td>
                     <td>{item.number}</td>
                     <td>{item.company}</td>
-                    <td>edit delete</td>
+                    <td className="btn-table">
+                      <button
+                        className="edit-btn"
+                        aria-label="edit employee in table"
+                      >
+                        edit
+                      </button>
+                      <button
+                        className="delete-btn"
+                        aria-label="delete employee from table"
+                        onClick={() => {
+                          setArrEmp(arrEmp.filter(function (_, i) {
+                            return i !== index;
+                          }));
+                        }}
+                      >
+                        delete
+                      </button>
+                    </td>
                   </tr>
                 );
               })}
