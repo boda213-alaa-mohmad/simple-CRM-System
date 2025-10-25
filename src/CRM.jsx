@@ -2,7 +2,10 @@ import { useState } from "react";
 // import { useEffect } from "react";
 export default function CRM() {
   let [click, setClick] = useState(false);
-  let [edit, setEdit] = useState(false);
+  let [edit, setEdit] = useState(null);
+  
+  let [deleteBtn, setDelete] = useState(false);
+  let [indexDelete, setIndexDelete] = useState(null);
   let [emp, setEmp] = useState({
     name: "",
     email: "",
@@ -11,10 +14,6 @@ export default function CRM() {
   }); // ? object
 
   let [arrEmp, setArrEmp] = useState([]); // ?array
-
-  //   useEffect(() => {
-  //     console.log("arrEmp changed:", arrEmp);
-  //   }, [arrEmp]);
 
   return (
     <>
@@ -46,7 +45,23 @@ export default function CRM() {
                 X
               </button>
             </div>
-            <form className="form">
+            <form
+              className="form"
+              onSubmit={(e) => {
+                console.log(emp.name);
+                console.log(emp.email);
+                console.log(emp.number);
+                console.log(emp.company);
+                setArrEmp([...arrEmp, emp]);
+                e.preventDefault();
+                setEmp({
+                  name: "",
+                  email: "",
+                  number: "",
+                  company: "",
+                });
+              }}
+            >
               <label>
                 <span
                   className="require"
@@ -106,27 +121,19 @@ export default function CRM() {
                   }}
                 />{" "}
               </label>
+              <button type="submit" className="btnOp add">
+                Add Customer
+              </button>
+              <button
+                className="btnOp cancel"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setClick(false);
+                }}
+              >
+                Cancel
+              </button>
             </form>
-            <button
-              className="btnOp add"
-              onClick={() => {
-                console.log(emp.name);
-                console.log(emp.email);
-                console.log(emp.number);
-                console.log(emp.company);
-                setArrEmp([...arrEmp, emp]);
-              }}
-            >
-              Add Customer
-            </button>
-            <button
-              className="btnOp cancel"
-              onClick={() => {
-                setClick(false);
-              }}
-            >
-              Cancel
-            </button>
           </div>
         </div>
       )}
@@ -154,6 +161,11 @@ export default function CRM() {
                       <button
                         className="edit-btn"
                         aria-label="edit employee in table"
+                        // onClick={() => {
+                        //   setEdit(index);
+                        //   setEmp(arrEmp[index]);
+                        //   setClick(true);
+                        // }}
                       >
                         edit
                       </button>
@@ -161,9 +173,8 @@ export default function CRM() {
                         className="delete-btn"
                         aria-label="delete employee from table"
                         onClick={() => {
-                          setArrEmp(arrEmp.filter(function (_, i) {
-                            return i !== index;
-                          }));
+                          setDelete(true);
+                          setIndexDelete(index);
                         }}
                       >
                         delete
@@ -178,6 +189,39 @@ export default function CRM() {
       ) : (
         <div className="no-title-div">
           <h3 className="no-title-emp">Sorry we don't have an employee</h3>
+        </div>
+      )}
+      {deleteBtn && (
+        <div className="div-form">
+          <div className="popup">
+            <h3>Do you want Delete that Item?</h3>
+            <div className="">
+              <button
+                className="delete-btn"
+                aria-label="comfirm deleting"
+                // onClick={() => {
+                //   setArrEmp(
+                //     arrEmp.filter(function (_, i) {
+                //       setDelete(false);
+                //       return i !== indexDelete;
+                //     })
+                //   );
+                // }}
+              >
+                Okay
+              </button>
+              <button
+                className="edit-btn"
+                aria-label="cancel deleting"
+                // onClick={() => {
+                //   setDelete(false);
+                //   setIndexDelete(null);
+                // }}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </>
