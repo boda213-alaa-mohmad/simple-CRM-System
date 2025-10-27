@@ -3,8 +3,6 @@ import { useState } from "react";
 
 export default function CRM() {
   let [click, setClick] = useState(false);
-  let [edit, setEdit] = useState(false);
-  let [editIndex, setEditIndex] = useState(null);
   let [errorMessage, setErrorMessage] = useState(false);
   let [deleteBtn, setDelete] = useState(false);
   let [emp, setEmp] = useState({
@@ -13,6 +11,13 @@ export default function CRM() {
     number: "",
     company: "",
   }); // ? object
+
+  // edit
+  let [edit, setEdit] = useState(false);
+  let [editIndex, setEditIndex] = useState(null);
+
+  // ! delete
+  let [deleteIndex, setDeleteIndex] = useState(null);
 
   let [arrEmp, setArrEmp] = useState([]); // ?array
 
@@ -211,7 +216,10 @@ export default function CRM() {
                       <button
                         className="delete-btn"
                         aria-label="delete employee from table"
-                        onClick={() => {}}
+                        onClick={() => {
+                          setDelete(true);
+                          setDeleteIndex(index);
+                        }}
                       >
                         delete
                       </button>
@@ -235,24 +243,27 @@ export default function CRM() {
               <button
                 className="delete-btn"
                 aria-label="comfirm deleting"
-                // onClick={() => {
-                //   setArrEmp(
-                //     arrEmp.filter(function (_, i) {
-                //       setDelete(false);
-                //       return i !== indexDelete;
-                //     })
-                //   );
-                // }}
+                onClick={() => {
+                  {
+                    setArrEmp(
+                      arrEmp.filter(function (_, index) {
+                        return index !== deleteIndex;
+                      })
+                    );
+                    setDelete(false);
+                    setDeleteIndex(null);
+                  }
+                }}
               >
                 Okay
               </button>
               <button
                 className="edit-btn"
                 aria-label="cancel deleting"
-                // onClick={() => {
-                //   setDelete(false);
-                //   setIndexDelete(null);
-                // }}
+                onClick={() => {
+                  setDelete(false);
+                  setDeleteIndex(null);
+                }}
               >
                 Cancel
               </button>
@@ -263,3 +274,17 @@ export default function CRM() {
     </>
   );
 }
+
+// onClick={() => {
+//   setArrEmp(
+//     arrEmp.filter(function (_, i) {
+//       setDelete(false);
+//       return i !== indexDelete;
+//     })
+//   );
+// }}
+
+// onClick={() => {
+//   setDelete(false);
+//   setIndexDelete(null);
+// }}
