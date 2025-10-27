@@ -1,11 +1,12 @@
 import { useState } from "react";
 // import { useEffect } from "react";
+
 export default function CRM() {
   let [click, setClick] = useState(false);
-  let [edit, setEdit] = useState(null);
-  
+  let [edit, setEdit] = useState(false);
+  let [editIndex, setEditIndex] = useState(null);
+  let [errorMessage, setErrorMessage] = useState(false);
   let [deleteBtn, setDelete] = useState(false);
-  let [indexDelete, setIndexDelete] = useState(null);
   let [emp, setEmp] = useState({
     name: "",
     email: "",
@@ -27,6 +28,7 @@ export default function CRM() {
           aria-label="Add Customer"
           onClick={() => {
             setClick(true);
+            setEdit(false);
           }}
         >
           Add Customer
@@ -36,7 +38,7 @@ export default function CRM() {
         <div className="div-form">
           <div className="popup">
             <div className="title-and-button">
-              <h3>Add New Customer</h3>
+              <h3>{edit ? "Edit the customer" : "Add new customer"}</h3>
               <button
                 onClick={() => {
                   setClick(false);
@@ -48,18 +50,40 @@ export default function CRM() {
             <form
               className="form"
               onSubmit={(e) => {
-                console.log(emp.name);
-                console.log(emp.email);
-                console.log(emp.number);
-                console.log(emp.company);
-                setArrEmp([...arrEmp, emp]);
                 e.preventDefault();
-                setEmp({
-                  name: "",
-                  email: "",
-                  number: "",
-                  company: "",
-                });
+
+                if (edit) {
+                  const updated = [...arrEmp];
+                  updated[editIndex] = emp;
+                  setArrEmp(updated);
+                  setEdit(false);
+                  setClick(false);
+                  setEmp({
+                    name: "",
+                    email: "",
+                    number: "",
+                    company: "",
+                  });
+                  return;
+                }
+
+                const isDuplicateEmail = arrEmp.some(
+                  (item) => item.email === emp.email
+                );
+
+                if (isDuplicateEmail) {
+                  setErrorMessage(true);
+                  return;
+                } else {
+                  setArrEmp([...arrEmp, emp]);
+                  setEmp({
+                    name: "",
+                    email: "",
+                    number: "",
+                    company: "",
+                  });
+                  setErrorMessage(false);
+                }
               }}
             >
               <label>
@@ -81,7 +105,6 @@ export default function CRM() {
                   }}
                 />{" "}
               </label>
-
               <label>
                 <span className="require">Email</span>
                 <input
@@ -95,7 +118,19 @@ export default function CRM() {
                   }}
                 />{" "}
               </label>
-
+              {errorMessage && (
+                <div className="error-message">
+                  <h2
+                    style={{
+                      padding: "4px",
+                      color: "red",
+                      fontSize: "20px",
+                    }}
+                  >
+                    you must enter email unique
+                  </h2>
+                </div>
+              )}
               <label>
                 <span>Number</span>
                 <input
@@ -108,7 +143,6 @@ export default function CRM() {
                   }}
                 />{" "}
               </label>
-
               <label>
                 <span>company</span>
                 <input
@@ -121,8 +155,12 @@ export default function CRM() {
                   }}
                 />{" "}
               </label>
-              <button type="submit" className="btnOp add">
-                Add Customer
+              <button
+                type="submit"
+                className="btnOp add"
+                aria-label={edit ? "edit button" : "add new customer button"}
+              >
+                {edit ? "Edit" : "Add Customer"}
               </button>
               <button
                 className="btnOp cancel"
@@ -161,21 +199,19 @@ export default function CRM() {
                       <button
                         className="edit-btn"
                         aria-label="edit employee in table"
-                        // onClick={() => {
-                        //   setEdit(index);
-                        //   setEmp(arrEmp[index]);
-                        //   setClick(true);
-                        // }}
+                        onClick={() => {
+                          setClick(true);
+                          setEdit(true);
+                          setEmp(arrEmp[index]);
+                          setEditIndex(index);
+                        }}
                       >
                         edit
                       </button>
                       <button
                         className="delete-btn"
                         aria-label="delete employee from table"
-                        onClick={() => {
-                          setDelete(true);
-                          setIndexDelete(index);
-                        }}
+                        onClick={() => {}}
                       >
                         delete
                       </button>
