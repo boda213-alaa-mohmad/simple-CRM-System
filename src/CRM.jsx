@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function CRM() {
   let [click, setClick] = useState(false);
@@ -20,6 +20,24 @@ export default function CRM() {
   let [arrEmp, setArrEmp] = useState([]); // ?array
   let [phoneError, setPhoneError] = useState("");
   let [nameError, setNameError] = useState("");
+
+useEffect(() => {
+  const stored = localStorage.getItem("employees");
+  if (stored) {
+    try {
+      setArrEmp(JSON.parse(stored));
+    } catch (e) {
+      console.error("Error parsing employees:", e);
+    }
+  }
+}, []);
+
+useEffect(() => {
+  if (arrEmp.length > 0) {
+    localStorage.setItem("employees", JSON.stringify(arrEmp));
+  }
+}, [arrEmp]);
+
 
   return (
     <>
