@@ -1,5 +1,4 @@
 import { useState } from "react";
-// import { useEffect } from "react";
 
 export default function CRM() {
   let [click, setClick] = useState(false);
@@ -10,16 +9,17 @@ export default function CRM() {
     email: "",
     number: "",
     company: "",
-  }); // ? object
+  });
 
   // edit
   let [edit, setEdit] = useState(false);
   let [editIndex, setEditIndex] = useState(null);
 
-  // ! delete
   let [deleteIndex, setDeleteIndex] = useState(null);
 
   let [arrEmp, setArrEmp] = useState([]); // ?array
+  let [phoneError, setPhoneError] = useState("");
+  let [nameError, setNameError] = useState("");
 
   return (
     <>
@@ -34,6 +34,8 @@ export default function CRM() {
           onClick={() => {
             setClick(true);
             setEdit(false);
+            setNameError("");
+            setPhoneError("");
           }}
         >
           Add Customer
@@ -56,6 +58,25 @@ export default function CRM() {
               className="form"
               onSubmit={(e) => {
                 e.preventDefault();
+
+                const regex = /^[A-Za-z\s]{5,20}$/;
+                const phoneRegex = /^(011|012|010|015)[0-9]{8}$/;
+
+                if (!regex.test(emp.name)) {
+                  setNameError(
+                    "Name must be 5–20 letters only, no numbers or special characters!"
+                  );
+                  return;
+                } else {
+                  setNameError("");
+                }
+
+                if (!phoneRegex.test(emp.number)) {
+                  setPhoneError("Name must only 11 digits");
+                  return;
+                } else {
+                  setPhoneError("");
+                }
 
                 if (edit) {
                   const updated = [...arrEmp];
@@ -109,6 +130,19 @@ export default function CRM() {
                     setEmp({ ...emp, name: e.target.value });
                   }}
                 />{" "}
+                {nameError && (
+                  <div>
+                    <p
+                      style={{
+                        color: "red",
+                        padding: "8px",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      {nameError}
+                    </p>
+                  </div>
+                )}
               </label>
               <label>
                 <span className="require">Email</span>
@@ -137,9 +171,10 @@ export default function CRM() {
                 </div>
               )}
               <label>
-                <span>Number</span>
+                <span className="require">Number </span>
                 <input
                   type="text"
+                  required
                   aria-label="Enter Number"
                   placeholder="011-00000"
                   value={emp.number}
@@ -148,6 +183,20 @@ export default function CRM() {
                   }}
                 />{" "}
               </label>
+              {phoneError && (
+                <div>
+                  <h3
+                    style={{
+                      padding: "4px",
+                      color: "red",
+                      fontSize: "20px",
+                    }}
+                  >
+                    it supppose to be 11 numbers and start whether 010, 011,
+                    015, or 012
+                  </h3>
+                </div>
+              )}
               <label>
                 <span>company</span>
                 <input
@@ -274,17 +323,3 @@ export default function CRM() {
     </>
   );
 }
-
-// onClick={() => {
-//   setArrEmp(
-//     arrEmp.filter(function (_, i) {
-//       setDelete(false);
-//       return i !== indexDelete;
-//     })
-//   );
-// }}
-
-// onClick={() => {
-//   setDelete(false);
-//   setIndexDelete(null);
-// }}
